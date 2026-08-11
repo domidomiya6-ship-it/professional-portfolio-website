@@ -2,7 +2,7 @@
 
 A responsive personal portfolio website built for the SAD (System Analysis and Design) course assignment at the University of Vavuniya, Faculty of Technological Studies, Department of ICT.
 
-**Live site:** [ADD YOUR DEPLOYED URL HERE]
+**Live site:** [https://domidomiya6-ship-it.github.io/professional-portfolio-website/]
 
 ## About
 
