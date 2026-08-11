@@ -1,3 +1,25 @@
+// ===== CV viewer modal =====
+const cvModal = document.getElementById('cvModal');
+const cvIframe = document.getElementById('cvIframe');
+const CV_PATH = 'assets/Domiya_Mayilalakan_CV.pdf';
+
+function openCvModal(){
+  cvIframe.src = CV_PATH;
+  cvModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeCvModal(){
+  cvModal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  cvIframe.src = '';
+}
+
+document.getElementById('viewCvBtn')?.addEventListener('click', openCvModal);
+document.getElementById('viewCvBtnNav')?.addEventListener('click', openCvModal);
+document.getElementById('cvModalClose')?.addEventListener('click', closeCvModal);
+document.getElementById('cvModalBackdrop')?.addEventListener('click', closeCvModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCvModal(); });
+
 // ===== Year in footer =====
 document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -85,12 +107,40 @@ filterBtns.forEach(btn => {
   });
 });
 
-// ===== Contact form (frontend-only demo submit) =====
+// ===== Contact form — sends via EmailJS =====
+const EMAILJS_PUBLIC_KEY = "Zti3xKo_P-Vih-ftm";
+const EMAILJS_SERVICE_ID = "service_5ladhlq";
+const EMAILJS_TEMPLATE_ID = "template_rcex6x8";
+
+if (window.emailjs) {
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+}
+
 const form = document.getElementById('contactForm');
 const formNote = document.getElementById('formNote');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  formNote.textContent = "Thanks — your message is ready to send. Connect a form service (e.g. Formspree) to deliver it to your inbox.";
-  form.reset();
+
+  if (!window.emailjs) {
+    formNote.textContent = "Couldn't load the email service — please email me directly at domidomiya6@gmail.com.";
+    return;
+  }
+
+  const submitBtn = form.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  formNote.textContent = "Sending…";
+
+  emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form)
+    .then(() => {
+      formNote.textContent = "Thanks — your message has been sent!";
+      form.reset();
+    })
+    .catch((err) => {
+      console.error("EmailJS error:", err);
+      formNote.textContent = "Something went wrong sending that — please email me directly at domidomiya6@gmail.com.";
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+    });
 });
